@@ -1,0 +1,66 @@
+site_name: POPS
+site_description: Misspecification-aware uncertainty quantification for regression
+site_url: https://pops-uq.github.io/
+repo_url: https://github.com/POPS-UQ/POPS-UQ.github.io
+repo_name: POPS-UQ/POPS-UQ.github.io
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - search.highlight
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - tables
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Method:
+      - Overview: method/index.md
+      - Concepts: method/concepts.md
+  - Getting Started:
+      - Overview: getting-started/index.md
+      - Python: getting-started/python.md
+      - Julia: getting-started/julia.md
+  - Tutorials:
+      - Overview: tutorials/index.md
+  - Implementations:
+      - Python: implementations/python.md
+      - Julia: implementations/julia.md
+  - Citation: citation.md
+  - Contributing: contributing.md
+
+strict: true
+
