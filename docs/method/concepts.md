@@ -28,6 +28,9 @@ sampling and uncertainty propagation. Exact public objects and output shapes
 are implementation-specific; consult the [Python](../implementations/python.md)
 or [Julia](../implementations/julia.md) documentation.
 
+The [algorithm page](algorithm.md) derives the pointwise corrections and shows
+how their singular-vector coordinates define the sampling hyperrectangle.
+
 ## Interpretation and limits
 
 POPS uncertainty describes sensitivity to model misspecification under the
@@ -35,4 +38,3 @@ method's assumptions. It is not automatically a measurement-noise model, a
 guarantee of coverage, or a substitute for checking the suitability of the
 model class and data. Consult the [publication](../citation.md) before drawing
 scientific conclusions from an application.
-

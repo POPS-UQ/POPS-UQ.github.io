@@ -9,7 +9,9 @@ The method constructs Pointwise Optimal Parameter Sets (POPS): parameter values
 that make individual observations optimal subject to the regression problem.
 Their spread describes parameter variation induced by model misspecification.
 Practical implementations use this structure to construct an uncertainty
-distribution and an efficient hypercube approximation.
+distribution and an efficient hypercube approximation. The
+[algorithm page](algorithm.md) gives the complete linear-regression construction,
+including the pointwise constrained solutions and hypercube sampler.
 
 This concise overview deliberately follows the published scope rather than
 introducing a new derivation. For definitions, derivations, assumptions, and
@@ -19,5 +21,5 @@ validation, consult the [paper](https://doi.org/10.1088/2632-2153/ad9fce):
 > surrogate models in the low-noise regime,” *Machine Learning: Science and
 > Technology* (2025). DOI: 10.1088/2632-2153/ad9fce.
 
-See [Concepts](concepts.md) for terminology used across both implementations.
-
+See [Concepts](concepts.md) for terminology used across both implementations,
+or continue to the [algorithm](algorithm.md) for the mathematical steps.

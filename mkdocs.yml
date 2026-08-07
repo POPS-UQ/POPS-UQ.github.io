@@ -50,6 +50,7 @@ nav:
   - Method:
       - Overview: method/index.md
       - Concepts: method/concepts.md
+      - Algorithm: method/algorithm.md
   - Getting Started:
       - Overview: getting-started/index.md
       - Python: getting-started/python.md
@@ -63,4 +64,3 @@ nav:
   - Contributing: contributing.md
 
 strict: true
-
