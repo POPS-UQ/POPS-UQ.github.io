@@ -1,0 +1,20 @@
+/* The example figure is a matplotlib PNG with an opaque white canvas. Give it a
+   white plate with padding so it sits deliberately on the page rather than
+   floating as a bright rectangle, in either colour scheme. */
+.md-typeset img.figure {
+  display: block;
+  width: 100%;
+  background: #fff;
+  padding: 0.8rem;
+  border-radius: 0.2rem;
+  box-shadow: 0 0 0 1px var(--md-default-fg-color--lightest);
+}
+
+.md-typeset figure > figcaption {
+  max-width: 44rem;
+  margin: 0.6rem auto 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color--light);
+  text-align: left;
+}

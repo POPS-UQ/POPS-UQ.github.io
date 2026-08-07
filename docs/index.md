@@ -2,46 +2,84 @@
 
 ## Misspecification-aware uncertainty quantification for regression
 
-[Get started with Python](getting-started/python.md){ .md-button .md-button--primary }
-[Get started with Julia](getting-started/julia.md){ .md-button .md-button--primary }
-[Read about the method](method/index.md){ .md-button }
-[Read the paper](https://doi.org/10.1088/2632-2153/ad9fce){ .md-button }
+Regression models are structurally imperfect: the model class usually cannot
+represent the target exactly. When the data are also near-deterministic —
+simulation output, interatomic potentials, other low-noise settings — standard
+Bayesian regression has nowhere to put that structural error, and its parameter
+uncertainty decays as more data arrive. The model grows confident while
+remaining systematically wrong.
 
-POPS is a misspecification-aware uncertainty-quantification method for
-regression in low-noise or near-deterministic settings.
+POPS estimates the parameter uncertainty caused by the model form itself. For
+each training point it computes the parameter perturbation that would fit that
+point exactly; the collection of these **Pointwise Optimal Parameter Sets**
+spans the directions in which the model cannot reconcile its own residuals.
+Their spread defines a posterior over parameters that does not vanish in the
+large-data limit, and costs one extra linear solve — no sampling chain, no
+ensemble, no retraining.
 
-Regression and surrogate models can be structurally imperfect. When the data
-have little measurement noise, treating residual error purely as noise can
-produce uncertainty estimates that do not represent this model
-misspecification. POPS uses **Pointwise Optimal Parameter Sets** to quantify
-parameter uncertainty associated with that misspecification.
+[How POPS works](method/index.md) ·
+[Algorithm](method/algorithm.md) ·
+[Paper](https://doi.org/10.1088/2632-2153/ad9fce)
 
-## Choose an implementation
+![Quartic polynomial fitted to an oscillatory target at three data densities.
+Bayesian Ridge uncertainty collapses as data are added, while the POPS
+posteriors retain uncertainty where the model class cannot follow the
+target.](assets/pops-vs-bayesian-ridge.png){ .figure }
 
-<div class="grid cards" markdown>
+/// caption
+A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
+**Top:** the Bayesian Ridge posterior tightens around a wrong answer.
+**Middle, bottom:** the POPS ensemble and hypercube posteriors keep uncertainty
+exactly where the polynomial cannot follow the target.
+///
 
--   :fontawesome-brands-python: **Python — `popsregression`**
+## Quick start
 
-    ---
+=== "Python"
 
-    A scikit-learn-compatible implementation.
+    ```bash
+    pip install popsregression
+    ```
 
-    [Python documentation](https://pops-uq.github.io/popsregression/)
-    · [Repository](https://github.com/POPS-UQ/popsregression)
+    ```python
+    from popsregression import POPSRegression
 
--   :simple-julia: **Julia — `POPSRegression.jl`**
+    model = POPSRegression().fit(X_train, y_train)
 
-    ---
+    # y_std combines misspecification and epistemic uncertainty
+    y_pred, y_std = model.predict(X_test, return_std=True)
+    ```
 
-    A Julia implementation using StatsAPI conventions.
+    `POPSRegression` is a scikit-learn estimator, so it drops into pipelines
+    and hyperparameter search unchanged.
 
-    [Julia documentation](https://pops-uq.github.io/POPSRegression.jl/)
-    · [Repository](https://github.com/POPS-UQ/POPSRegression.jl)
+    [Quick start](getting-started/python.md) ·
+    [Documentation](https://pops-uq.github.io/popsregression/) ·
+    [Repository](https://github.com/POPS-UQ/popsregression)
 
-</div>
+=== "Julia"
 
-The implementations have independent APIs, versions, releases, and build
-systems. This site owns their shared scientific context; each implementation's
-site remains the authority for its installation, API, and language-specific
-workflows.
+    ```julia
+    import Pkg; Pkg.add("POPSRegression")
+    ```
 
+    ```julia
+    using POPSRegression
+
+    model = fit(POPSModel, X_train, Y_train)
+
+    pred = predict(model, X_test; return_std=true, return_bounds=true)
+    pred.mean, pred.std, pred.lower, pred.upper
+    ```
+
+    `POPSModel` follows StatsAPI.jl conventions and supports multivariate
+    targets.
+
+    [Quick start](getting-started/julia.md) ·
+    [Documentation](https://pops-uq.github.io/POPSRegression.jl/) ·
+    [Repository](https://github.com/POPS-UQ/POPSRegression.jl)
+
+The two implementations are independent, with their own APIs, versions and
+releases. This site owns the shared scientific context — what the method does
+and why. Each implementation's own site remains the authority for installation,
+API and language-specific workflows.
