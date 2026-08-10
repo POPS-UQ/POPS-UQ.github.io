@@ -10,16 +10,20 @@ The [concepts page ](concepts.md) defines the terminology used across both imple
 Take a linear model \(\mathbf x^\mathsf T\mathbf w\) fitted to \(N\)
 observations. Standard Bayesian linear regression assumes specification, i.e. 
 the *true* data can be modelled by 
+
 \[
-y_n = \mathbf x_n^\mathsf T\mathbf w^* + \epsilon_n
+y_n = \mathbf x_n^\mathsf T\bar{\mathbf w} + \epsilon_n
 \]
-where \(\mathbf w^*\) is the best fit parameter and \epsilon_i is some *aleatoric* noise, 
+
+where $\bar{\mathbf w}$ is the best fit parameter and \epsilon_i is some *aleatoric* noise, 
 i.e. varies randomly each time we query the true function with input \(\mathbf x_n\).
 The approach returns a posterior over parameters \(\mathbf w\) with covariance
+
 \[
 {\bf\Sigma}_{\text{epistemic}}
 = \left(N\alpha\,\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
 \]
+
 where \(\alpha\) is the estimated noise precision. 
 
 *If* the problem was specified, this would be correct: this is how much
@@ -64,14 +68,14 @@ There are many answers to this question, as there are many values of model param
 which would exactly fit a given observation. For each observation, we can thus define 
 a **pointwise optimal parameter set** — POPS - the (typically open) set of all possible parameters 
 which can interpolate a given data point. The POPS algorithm aims to map disagreement 
-by finding \(\mathbf w^*_n\) the total loss minimiser *within each POPS*, producing a set 
+by finding \(\mathbf w_n\) the total loss minimiser *within each POPS*, producing a set 
 of parameter vectors. Any posterior whose support covers the span of these vectors is guaranteed to 
 cover all training data. The POPS paper shows how as \(N\to\infty\) ensuring any posterior has this support 
 is essential to avoid a divergent generalisation error. 
 
-Furthermore, for regularized linear regression we can find \(\mathbf w^*_n\) analytically:
+Furthermore, for regularized linear regression we can find \(\mathbf w_n\) analytically:
 \[
-\mathbf w^*_n = \mathbf w^* + \frac{e_n}{h_n}\,\mathbf a_n,
+\mathbf w_n = \bar{\mathbf w} + \frac{e_n}{h_n}\,\mathbf a_n,
 \qquad\text{giving}\qquad
 \mathbf x_n^\mathsf T(\mathbf w + \Delta\mathbf w_n) = y_n ,
 \]
@@ -85,7 +89,7 @@ Each observation therefore names one parameter vector that is optimal for it.
 These vectors map model disagreement via the directions in
 parameter space along which the observations pull against each other.
 
-The set \(\{\mathbf w^*_n\}\) is the POPS posterior support. The
+The set \(\{\mathbf w_n\}\) is the POPS posterior support. The
 implementations either use it directly (`ensemble`) or enclose it in an
 axis-aligned box in its own principal-component basis and sample from that
 (`hypercube`), which smooths the estimate and makes propagation cheap. Both are
