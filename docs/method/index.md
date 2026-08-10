@@ -17,12 +17,13 @@ y_n = \mathbf x_n^\mathsf T\bar{\mathbf w} + \epsilon_n
 
 where $\bar{\mathbf w}$ is the best fit parameter and $\epsilon_n$ is some *aleatoric* noise, 
 i.e. varies randomly each time we query the true function with input \(\mathbf x_n\).
-The approach returns a posterior over parameters \(\mathbf w\) with covariance
+The approach returns a posterior over parameters with covariance
 
 \[
 {\bf\Sigma}_{\text{epistemic}}
-= \left(N\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
+= \left( N\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
 \]
+
 *If* the problem was specified, this would be correct: this is how much
 the finite sample fails to pin down \(\mathbf w\). In the large data limit,
 the covariance shrinks like \(1/N\), and the posterior concentrates on a point.
