@@ -1,8 +1,6 @@
 site_name: POPS
 site_description: Misspecification-aware uncertainty quantification for regression
 site_url: https://pops-uq.github.io/
-repo_url: https://github.com/POPS-UQ/POPS-UQ.github.io
-repo_name: POPS-UQ/POPS-UQ.github.io
 
 theme:
   name: material
@@ -39,7 +37,13 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.blocks.caption
   - tables
+
+extra_css:
+  - stylesheets/extra.css
 
 extra_javascript:
   - javascripts/mathjax.js
@@ -48,7 +52,7 @@ extra_javascript:
 nav:
   - Home: index.md
   - Method:
-      - Overview: method/index.md
+      - How POPS works: method/index.md
       - Concepts: method/concepts.md
       - Algorithm: method/algorithm.md
   - Getting Started:
