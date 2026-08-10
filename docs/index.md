@@ -1,21 +1,18 @@
-# POPS
-
-## Misspecification-aware uncertainty quantification for regression
-
-Regression models are structurally imperfect: the model class usually cannot
-represent the target exactly. When the data are also near-deterministic —
-simulation output, interatomic potentials, other low-noise settings — standard
-Bayesian regression has nowhere to put that structural error, and its parameter
-uncertainty decays as more data arrive. The model grows confident while
-remaining systematically wrong.
+## POPS: Misspecification-aware uncertainties in regression
+Standard Bayesian regression estimates epistemic and aleatoric uncertainties, but provably ignores model misspecification — the error arising from a limited model form. 
+In the low-noise (near-deterministic) limit, weight uncertainties are significantly underestimated, since they only capture epistemic uncertainty, which decays with increasing data. 
 
 POPS estimates the parameter uncertainty caused by the model form itself. For
-each training point it computes the parameter perturbation that would fit that
-point exactly; the collection of these **Pointwise Optimal Parameter Sets**
+each training point it minimizes the global loss from the  **Pointwise Optimal Parameter Set (POPS)**
+for that point, i.e. the set of parameters that would fit that
+point exactly. The collection of these POPS-constrained minimizers 
 spans the directions in which the model cannot reconcile its own residuals.
 Their spread defines a posterior over parameters that does not vanish in the
 large-data limit, and costs one extra linear solve — no sampling chain, no
-ensemble, no retraining.
+ensemble, no retraining. 
+
+Theoretically, one can show that ignorance of misspecification arises from minimizing the expected loss, which is only a (Jensen) upper bound to the generalization error. 
+The POPS approach ensures the generalization error remains finite in the low-noise limit. 
 
 [How POPS works](method/index.md) ·
 [Algorithm](method/algorithm.md) ·
