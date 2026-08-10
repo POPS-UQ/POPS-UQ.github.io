@@ -1,26 +1,30 @@
-# How POPS works
+# The POPS approach for misspecified regression problems
 
-This page explains what POPS estimates and why the construction is a reasonable
-thing to do. The [algorithm page](algorithm.md) gives the complete linear
-construction and its numerical details; [Concepts](concepts.md) defines the
-terminology used across both implementations.
+This page explains the POPS approach for misspecified regression and implementation for linear models. 
+The [algorithm page](algorithm.md) gives the complete linear
+construction and its numerical details
+The [concepts page ](concepts.md) defines the terminology used across both implementations.
 
-## The problem: confident and wrong
+## Overconfidence in Bayesian regression
 
 Take a linear model \(\mathbf x^\mathsf T\mathbf w\) fitted to \(N\)
-observations. Standard Bayesian linear regression returns a posterior over
-parameters with covariance
-
+observations. Standard Bayesian linear regression assumes specification, i.e. 
+the *true* data can be modelled by 
 \[
-\boldsymbol\Sigma_{\text{epistemic}}
-= \left(\alpha\,\mathbf X^\mathsf T\mathbf X + \lambda\mathbf I\right)^{-1},
+y_n = \mathbf x_n^\mathsf T\mathbf w^* + \epsilon_n
 \]
+where \(\mathbf w^*\) is the best fit parameter and \epsilon_i is some *aleatoric* noise, 
+i.e. varies randomly each time we query the true function with input \(\mathbf x_n\).
+The approach returns a posterior over parameters \(\mathbf w\) with covariance
+\[
+{\bf\Sigma}_{\text{epistemic}}
+= \left(N\alpha\,\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
+\]
+where \(\alpha\) is the estimated noise precision. 
 
-where \(\alpha\) is the estimated noise precision. This is a statement about
-sampling: *if* the data were the model plus independent noise, this is how much
-the finite sample fails to pin down \(\mathbf w\). Because
-\(\mathbf X^\mathsf T\mathbf X\) grows with \(N\), the covariance shrinks like
-\(1/N\), and the posterior concentrates on a point.
+*If* the problem was specified, this would be correct: this is how much
+the finite sample fails to pin down \(\mathbf w\). In the large data limit,
+the covariance shrinks like \(1/N\), and the posterior concentrates on a point.
 
 That is the correct answer to the question it asks. The difficulty is that in
 many applications the question is wrong in two ways at once:
@@ -30,9 +34,10 @@ many applications the question is wrong in two ways at once:
   linear interatomic potential fitted to a quantum-mechanical energy surface,
   cannot reproduce the target however much data it is given. There is a
   residual that no amount of data removes.
-- **The noise is negligible.** Deterministic simulation output has no
+
+- **The aleatoric noise is negligible.** Deterministic simulation output has no
   measurement noise worth speaking of. So the residual is not noise: it is
-  model-form error, a systematic and reproducible function of \(\mathbf x\).
+  model-form error, a systematic and reproducible function of \(\mathbf X\).
 
 Fit such data with a standard Bayesian method and the two failures compound.
 The estimator sees a large residual and attributes it to noise, inflating
@@ -47,7 +52,7 @@ Reporting a confident wrong answer is worse than reporting an uncertain one,
 particularly when the fitted model is a surrogate whose predictions feed a
 downstream calculation.
 
-## The idea: ask each observation what it would need
+## The POPS approach: ask each observation what it would need
 
 POPS attacks the problem from the residuals rather than from the noise model.
 The question it asks about observation \(n\) is:
@@ -55,27 +60,32 @@ The question it asks about observation \(n\) is:
 > How far would the parameters have to move for the model to fit *this*
 > observation exactly?
 
-For regularized linear regression that question has a closed-form answer. Write
-\(\mathbf C = \mathbf X^\mathsf T\mathbf X + \boldsymbol\Sigma_0/N\) for the
-regularized feature covariance, \(\mathbf w\) for the usual minimizer, and
-\(\mathbf e = \mathbf y - \mathbf X\mathbf w\) for the residuals. Define the
-parameter-space response \(\mathbf a_n\) of observation \(n\) by
-\(\mathbf C\mathbf a_n = \mathbf x_n\), with leverage score
-\(h_n = \mathbf x_n^\mathsf T\mathbf a_n\). The required perturbation is
+There are many answers to this question, as there are many values of model parameters 
+which would exactly fit a given observation. For each observation, we can thus define 
+a **pointwise optimal parameter set** — POPS - the (typically open) set of all possible parameters 
+which can interpolate a given data point. The POPS algorithm aims to map disagreement 
+by finding \(\mathbf w^*_n\) the total loss minimiser *within each POPS*, producing a set 
+of parameter vectors. Any posterior whose support covers the span of these vectors is guaranteed to 
+cover all training data. The POPS paper shows how as \(N\to\infty\) ensuring any posterior has this support 
+is essential to avoid a divergent generalisation error. 
 
+Furthermore, for regularized linear regression we can find \(\mathbf w^*_n\) analytically:
 \[
-\Delta\mathbf w_n = \frac{e_n}{h_n}\,\mathbf a_n,
+\mathbf w^*_n = \mathbf w^* + \frac{e_n}{h_n}\,\mathbf a_n,
 \qquad\text{giving}\qquad
-\mathbf x_n^\mathsf T(\mathbf w + \Delta\mathbf w_n) = y_n .
+\mathbf x_n^\mathsf T(\mathbf w + \Delta\mathbf w_n) = y_n ,
 \]
+\(\mathbf C = \mathbf X^\mathsf T\mathbf X + \boldsymbol\Sigma_0/N\) is the
+regularized feature covariance, \(h_n = \mathbf x_n^\mathsf T\mathbf a_n\) is the leverage\
+ \(\mathbf e = \mathbf y - \mathbf X\mathbf w\)  the residual and \(\mathbf C\mathbf a_n = \mathbf x_n\).
 
-Each observation therefore names one parameter vector — a **pointwise optimal
-parameter set** — that is optimal for it. These vectors are not competing
-estimates of the truth. They are a map of the disagreement: the directions in
-parameter space along which the observations pull against each other, and how
-hard.
 
-The set \(\{\mathbf w + \Delta\mathbf w_n\}\) is the POPS posterior support. The
+Each observation therefore names one parameter vector that is optimal for it. 
+
+These vectors map model disagreement via the directions in
+parameter space along which the observations pull against each other.
+
+The set \(\{\mathbf w^*_n\}\) is the POPS posterior support. The
 implementations either use it directly (`ensemble`) or enclose it in an
 axis-aligned box in its own principal-component basis and sample from that
 (`hypercube`), which smooths the estimate and makes propagation cheap. Both are
@@ -121,15 +131,14 @@ contribution shrinks toward zero, leaving the ordinary epistemic term. The
 method adds uncertainty when there is misspecification to report and stays out
 of the way when there is not.
 
-## What you get, and what you should not read into it
-
+**It is essential for propagation**
 A fitted model exposes a misspecification covariance alongside the usual
 epistemic one, samples from the POPS posterior, and predictions carrying
 combined uncertainty and min/max bounds over the posterior. Since the posterior
 is a set of parameter vectors, it propagates through any downstream calculation
 that consumes the model — not just through the prediction of \(y\).
 
-Some deliberate limits:
+**Some important limitations**:
 
 - POPS quantifies **parameter** uncertainty from misspecification. It is not a
   noise model, and it does not attempt to correct the mean prediction. A
@@ -137,7 +146,7 @@ Some deliberate limits:
 - The hypercube is an *enclosure* of the pointwise corrections. Points inside it
   were not themselves observed as pointwise optima, and its axes are specifically
   the principal directions of the corrections.
-- Coverage is not guaranteed a priori. The bands are wide where the residuals
+- Coverage is only guaranteed *a priori* for strict interpolation. The bands are wide where the residuals
   say they should be wide; whether that matches the true error on unseen data is
   an empirical question, addressed for several cases in the paper.
 - The construction above is for linear models — including nonlinear features
