@@ -38,13 +38,13 @@ should not form \(\mathbf C^{-1}\) explicitly.
 First solve for the regularized least-squares minimizer:
 
 \[
-\mathbf C\mathbf w = \mathbf X^\mathsf T\mathbf y.
+\mathbf C\bar{\mathbf w} = \mathbf X^\mathsf T\mathbf y.
 \]
 
 Its residual vector is
 
 \[
-\mathbf e = \mathbf y-\mathbf X\mathbf w.
+\mathbf e = \mathbf y-\mathbf X\bar{\mathbf w}.
 \]
 
 Next solve all feature-response systems at once:
@@ -63,7 +63,7 @@ h_n = \mathbf x_n^\mathsf T\mathbf a_n,
 \mathbf h=\operatorname{diag}(\mathbf X\mathbf A).
 \]
 
-The correction that makes observation $n$ exact is
+The correction that makes observation $n$ exact while minimizing the global loss is
 
 \[
 \Delta\mathbf w_n = \frac{e_n}{h_n}\mathbf a_n.
@@ -73,7 +73,7 @@ Indeed,
 
 \[
 \mathbf x_n^\mathsf T(\mathbf w+\Delta\mathbf w_n)
-= \mathbf x_n^\mathsf T\mathbf w
+= \mathbf x_n^\mathsf T\bar{\mathbf w}
 + \frac{e_n}{h_n}\mathbf x_n^\mathsf T\mathbf a_n
 = y_n.
 \]
@@ -101,7 +101,7 @@ Equivalently, if division and multiplication broadcast over the columns of
 The Pointwise Optimal Parameter Set used by the approximation is therefore
 
 \[
-\left\{\mathbf w+\Delta\mathbf w_n\right\}_{n=1}^{N}.
+\left\{\bar{\mathbf w}+\Delta\mathbf w_n\right\}_{n=1}^{N}.
 \]
 
 ### Algorithm 1
