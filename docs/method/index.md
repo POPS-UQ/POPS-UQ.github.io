@@ -21,7 +21,7 @@ The approach returns a posterior over parameters with covariance
 
 \[
 {\bf\Sigma}_{\text{epistemic}}
-= \left( N\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
+= \left( N\langle\mathbf x^\mathsf T\mathbf x\rangle + \lambda\mathbf I\right)^{-1},
 \]
 
 *If* the problem was specified, this would be correct: this is how much
@@ -39,11 +39,11 @@ many applications the question is wrong in two ways at once:
 
 - **The aleatoric noise is negligible.** Deterministic simulation output has no
   measurement noise worth speaking of. So the residual is not noise: it is
-  model-form error, a systematic and reproducible function of \(\mathbf X\).
+  model-form error, a systematic and reproducible function of \(\mathbf x\).
 
 Fit such data with a standard Bayesian method and the two failures compound.
 The estimator sees a large residual and attributes it to noise. Meanwhile
-\(\boldsymbol\Sigma_{\text{epistemic}}\) keeps shrinking, so the *parameter*
+\(\bf\Sigma_{\text{epistemic}}\) keeps shrinking, so the *parameter*
 uncertainty collapses even as the model stays systematically wrong. The top row
 of the figure on the [home page](../index.md) shows exactly this: at N/P = 100
 the Bayesian Ridge credible interval is tight and excludes the truth over most
@@ -71,14 +71,16 @@ cover all training data. The POPS paper shows how as \(N\to\infty\) ensuring any
 is essential to avoid a divergent generalisation error. 
 
 Furthermore, for regularized linear regression we can find \(\mathbf w_n\) analytically:
+
 \[
 \mathbf w_n = \bar{\mathbf w} + \frac{e_n}{h_n}\,\mathbf a_n,
 \qquad\text{giving}\qquad
 \mathbf x_n^\mathsf T(\mathbf w + \Delta\mathbf w_n) = y_n ,
 \]
-\(\mathbf C = \mathbf X^\mathsf T\mathbf X + \boldsymbol\Sigma_0/N\) is the
+
+where \(\mathbf C = \langle \mathbf x^\mathsf T\mathbf x\rangle + \Sigma_0/N\) is the
 regularized feature covariance, \(h_n = \mathbf x_n^\mathsf T\mathbf a_n\) is the leverage\
- \(\mathbf e = \mathbf y - \mathbf X\mathbf w\)  the residual and \(\mathbf C\mathbf a_n = \mathbf x_n\).
+ \(e_n = y_n - \mathbf x_n\bar{\mathbf w}\)  the residual and \(\mathbf C\mathbf a_n = \mathbf x_n\).
 
 
 Each observation therefore names one parameter vector that is optimal for it. 
@@ -118,8 +120,7 @@ the low-noise regime are informative about model form rather than about noise.
 That is a much weaker assumption than the Gaussian-noise story it replaces, and
 one that is easier to check: it holds when the data are near-deterministic.
 
-**It is cheap.** The corrections for all \(N\) observations follow from
-\(\mathbf C\mathbf A = \mathbf X^\mathsf T\), one extra solve reusing the same
+**It is cheap.** The corrections for all \(N\) observations follow fromone extra solve reusing the same
 factorization as the fit, plus an eigendecomposition in parameter space
 (\(P\times P\), not \(N\times N\)). There is no MCMC, no bootstrap, no ensemble
 of retrained models. This matters in the surrogate-modelling setting the method
