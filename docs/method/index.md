@@ -15,17 +15,14 @@ the *true* data can be modelled by
 y_n = \mathbf x_n^\mathsf T\bar{\mathbf w} + \epsilon_n
 \]
 
-where $\bar{\mathbf w}$ is the best fit parameter and \epsilon_i is some *aleatoric* noise, 
+where $\bar{\mathbf w}$ is the best fit parameter and $\epsilon_n$ is some *aleatoric* noise, 
 i.e. varies randomly each time we query the true function with input \(\mathbf x_n\).
 The approach returns a posterior over parameters \(\mathbf w\) with covariance
 
 \[
 {\bf\Sigma}_{\text{epistemic}}
-= \left(N\alpha\,\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
+= \left(N\langle\mathbf X^\mathsf T\mathbf X\rangle + \lambda\mathbf I\right)^{-1},
 \]
-
-where \(\alpha\) is the estimated noise precision. 
-
 *If* the problem was specified, this would be correct: this is how much
 the finite sample fails to pin down \(\mathbf w\). In the large data limit,
 the covariance shrinks like \(1/N\), and the posterior concentrates on a point.
@@ -44,8 +41,7 @@ many applications the question is wrong in two ways at once:
   model-form error, a systematic and reproducible function of \(\mathbf X\).
 
 Fit such data with a standard Bayesian method and the two failures compound.
-The estimator sees a large residual and attributes it to noise, inflating
-\(1/\alpha\) — the one place the machinery has to put unexplained error. Meanwhile
+The estimator sees a large residual and attributes it to noise. Meanwhile
 \(\boldsymbol\Sigma_{\text{epistemic}}\) keeps shrinking, so the *parameter*
 uncertainty collapses even as the model stays systematically wrong. The top row
 of the figure on the [home page](../index.md) shows exactly this: at N/P = 100
