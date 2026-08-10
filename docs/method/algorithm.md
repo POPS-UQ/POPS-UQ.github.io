@@ -18,16 +18,16 @@ Let
 \[
 \mathbf X \in \mathbb R^{N\times P},\qquad
 \mathbf y \in \mathbb R^N,\qquad
-\boldsymbol\Sigma_0 \in \mathbb R^{P\times P},
+\bf\Sigma_0 \in \mathbb R^{P\times P},
 \]
 
 where $N$ is the number of observations, $P$ is the number of model
-parameters, and \(\boldsymbol\Sigma_0\) is the regularization (prior-covariance)
+parameters, and \(\bf\Sigma_0\) is the regularization (prior-covariance)
 term used by the regression problem. Define the regularized feature covariance
 
 \[
 \mathbf C = \mathbf X^\mathsf T\mathbf X
-             + \frac{\boldsymbol\Sigma_0}{N}.
+             + {\bf\Sigma_0}.
 \]
 
 All occurrences of `solve` below mean solving a linear system; an implementation
