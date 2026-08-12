@@ -1,4 +1,4 @@
-## POPS: Misspecification-aware uncertainties in regression
+# POPS: Misspecification-aware uncertainties in regression
 Standard Bayesian regression estimates epistemic and aleatoric uncertainties, but provably ignores model misspecification — the error arising from a limited model form. 
 In the low-noise (near-deterministic) limit, weight uncertainties are significantly underestimated, since they only capture epistemic uncertainty, which decays with increasing data. 
 
