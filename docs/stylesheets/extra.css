@@ -18,3 +18,20 @@
   color: var(--md-default-fg-color--light);
   text-align: left;
 }
+
+/* Hide the top header bar on desktop, where the left sidebar already carries
+   the navigation. Below Material's 76.25em breakpoint the sidebar collapses
+   into a drawer, so the header must stay: it holds the hamburger that opens
+   it, plus the colour-scheme toggle. */
+@media screen and (min-width: 76.25em) {
+  .md-header {
+    display: none;
+  }
+
+  /* .md-sidebar sticks to top: 2.4rem to clear the header. With no header,
+     reclaim that space and pad to match the content's own top margin. */
+  .md-sidebar {
+    top: 0;
+    padding-top: 1.5rem;
+  }
+}
