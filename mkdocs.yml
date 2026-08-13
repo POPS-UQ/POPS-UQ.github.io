@@ -53,14 +53,15 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - How POPS works: method/index.md
+  - How POPS works: overview.md
   - Algorithm: 
-      - POPS Hypercube: method/algorithm.md
+      - POPS Hypercube: method/hypercube.md
+      - POPS PAC-Ellipse: method/pac-ellipse.md
   - Implementations:
       - Python: getting-started/python.md
       - Julia: getting-started/julia.md
   - Citation: citation.md
   - Contributing: contributing.md
-  - Glossary: method/concepts.md
+  - Glossary: glossary.md
 
 strict: true

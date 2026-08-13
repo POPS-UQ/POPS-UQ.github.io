@@ -5,6 +5,7 @@ It separates two operations:
 
 1. find the ordinary loss minimizer and the parameter correction required to
    fit each observation exactly; and
+
 2. enclose those corrections in a hyperrectangle in their active
    singular-vector basis and sample from it.
 
@@ -220,5 +221,5 @@ singular vectors of \(\mathbf T\).
 
 For the scientific motivation and scope, return to the
 [method overview](index.md). Public function names, array layouts, tolerances,
-and sampling interfaces belong to the [Python](../implementations/python.md) and
-[Julia](../implementations/julia.md) implementation documentation.
+and sampling interfaces belong to the [Python](../getting-started/python.md) and
+[Julia](../getting-started/julia.md) implementation documentation.

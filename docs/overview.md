@@ -1,9 +1,9 @@
 # The POPS approach for misspecified regression problems
 
 This page explains the POPS approach for misspecified regression and implementation for linear models. 
-The [algorithm page](algorithm.md) gives the complete linear
+The [algorithm page](method/hypercube.md) gives the complete linear
 construction and its numerical details
-The [concepts page ](concepts.md) defines the terminology used across both implementations.
+The [glossary](glossary.md) defines the terminology used across both implementations.
 
 ## Overconfidence in Bayesian regression
 
@@ -45,7 +45,7 @@ Fit such data with a standard Bayesian method and the two failures compound.
 The estimator sees a large residual and attributes it to noise. Meanwhile
 \(\bf\Sigma_{\text{epistemic}}\) keeps shrinking, so the *parameter*
 uncertainty collapses even as the model stays systematically wrong. The top row
-of the figure on the [home page](../index.md) shows exactly this: at N/P = 100
+of the figure on the [home page](./index.md) shows exactly this: at N/P = 100
 the Bayesian Ridge credible interval is tight and excludes the truth over most
 of the domain.
 
@@ -92,7 +92,7 @@ The set \(\{\mathbf w_n\}\) is the POPS posterior support. The
 implementations either use it directly (`ensemble`) or enclose it in an
 axis-aligned box in its own principal-component basis and sample from that
 (`hypercube`), which smooths the estimate and makes propagation cheap. Both are
-[derived on the algorithm page](algorithm.md).
+[derived on the algorithm page](hypercube.md).
 
 ## Why this behaves correctly
 
@@ -162,5 +162,5 @@ that consumes the model — not just through the prediction of \(y\).
 > DOI: [10.1088/2632-2153/ad9fce](https://doi.org/10.1088/2632-2153/ad9fce)
 
 Consult the paper for the derivations, assumptions and validation behind the
-summary given here. Continue to [Concepts](concepts.md) for terminology, or to
-the [algorithm](algorithm.md) for the full construction.
+summary given here. Continue to [glossary](glossary.md) for terminology, or to
+the [algorithm](method/hypercube.md) for the full construction.

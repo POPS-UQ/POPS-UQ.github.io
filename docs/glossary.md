@@ -1,7 +1,7 @@
-# Concepts
+# Glossary
 
 Terminology used across both implementations. See [How POPS works](index.md)
-for the rationale and the [algorithm](algorithm.md) for the construction.
+for the rationale and the [algorithm](hypercube.md) for the construction.
 
 ## Three kinds of uncertainty
 
