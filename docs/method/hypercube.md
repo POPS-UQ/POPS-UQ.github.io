@@ -220,6 +220,6 @@ singular vectors of \(\mathbf T\).
   measurement noise is uniformly distributed.
 
 For the scientific motivation and scope, return to the
-[method overview](index.md). Public function names, array layouts, tolerances,
+[method overview](../overview.md). Public function names, array layouts, tolerances,
 and sampling interfaces belong to the [Python](../implementations/python.md) and
 [Julia](../implementations/julia.md) implementation documentation.
