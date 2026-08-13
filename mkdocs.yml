@@ -58,9 +58,10 @@ nav:
       - POPS Hypercube: method/hypercube.md
       - POPS PAC-Ellipse: method/pac-ellipse.md
   - Implementations:
-      - Python: getting-started/python.md
-      - Julia: getting-started/julia.md
+      - Python: implementations/python.md
+      - Julia: implementations/julia.md
   - Citation: citation.md
+  - Contributors: contributors.md
   - Contributing: contributing.md
   - Glossary: glossary.md
 

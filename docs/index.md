@@ -36,7 +36,7 @@ A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
     `POPSRegression` is a scikit-learn estimator, so it drops into pipelines
     and hyperparameter search unchanged.
 
-    [Quick start](getting-started/python.md) ·
+    [Quick start](implementations/python.md) ·
     [Documentation](https://pops-uq.github.io/popsregression/) ·
     [Repository](https://github.com/POPS-UQ/popsregression)
 
@@ -58,7 +58,7 @@ A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
     `POPSModel` follows StatsAPI.jl conventions and supports multivariate
     targets.
 
-    [Quick start](getting-started/julia.md) ·
+    [Quick start](implementations/julia.md) ·
     [Documentation](https://pops-uq.github.io/POPSRegression.jl/) ·
     [Repository](https://github.com/POPS-UQ/POPSRegression.jl)
 
