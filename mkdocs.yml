@@ -52,18 +52,15 @@ extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - Overview: index.md
-  - Method:
-      - How POPS works: method/index.md
-      - Concepts: method/concepts.md
-      - Algorithm: method/algorithm.md
-  - Getting Started:
-      - Overview: getting-started/index.md
+  - Home: index.md
+  - How POPS works: method/index.md
+  - Algorithm: 
+      - POPS Hypercube: method/algorithm.md
+  - Implementations:
       - Python: getting-started/python.md
       - Julia: getting-started/julia.md
-  - Tutorials:
-      - Overview: tutorials/index.md
   - Citation: citation.md
   - Contributing: contributing.md
+  - Glossary: method/concepts.md
 
 strict: true
