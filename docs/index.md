@@ -1,18 +1,9 @@
-# POPS: Misspecification-aware uncertainties in regression
-Standard Bayesian regression estimates epistemic and aleatoric uncertainties, but provably ignores model misspecification — the error arising from a limited model form. 
-In the low-noise (near-deterministic) limit, weight uncertainties are significantly underestimated, since they only capture epistemic uncertainty, which decays with increasing data. 
+# POPS: Misspecification-aware regression
+Any regression scheme minimizing the expected loss, including Bayesian schemes, provably ignores model misspecification — the error arising from a limited model form. Parameter uncertainties can be strongly underestimated, especially in the near-deterministic (weak aleatoric) limit of broad interest for computational surrogate modeling. 
 
-POPS estimates the parameter uncertainty caused by the model form itself. For
-each training point it minimizes the global loss from the  **Pointwise Optimal Parameter Set (POPS)**
-for that point, i.e. the set of parameters that would fit that
-point exactly. The collection of these POPS-constrained minimizers 
-spans the directions in which the model cannot reconcile its own residuals.
-Their spread defines a posterior over parameters that does not vanish in the
-large-data limit, and costs one extra linear solve — no sampling chain, no
-ensemble, no retraining. 
+Theoretically, one can show this arises as the expected loss is a misspecification-blind upper bound to the generalization error. POPS is an efficient method to approximately minimize the generalization error which ensures posterior coverage in the near-determinstic limit. A demonstration compared to Bayesian regression is shown below. 
 
-Theoretically, one can show that ignorance of misspecification arises from minimizing the expected loss, which is only a (Jensen) upper bound to the generalization error. 
-The POPS approach ensures the generalization error remains finite in the low-noise limit. 
+This website details the theory; documentation for Python and Julia implemetations are given below. 
 
 [How POPS works](method/index.md) ·
 [Algorithm](method/algorithm.md) ·
@@ -20,14 +11,13 @@ The POPS approach ensures the generalization error remains finite in the low-noi
 
 ![Quartic polynomial fitted to an oscillatory target at three data densities.
 Bayesian Ridge uncertainty collapses as data are added, while the POPS
-posteriors retain uncertainty where the model class cannot follow the
+posterior retains uncertainty where the model class cannot follow the
 target.](assets/pops-vs-bayesian-ridge.png){ .figure }
-
 /// caption
 A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
-**Top:** the Bayesian Ridge posterior tightens around a wrong answer.
-**Middle, bottom:** the POPS ensemble and hypercube posteriors keep uncertainty
-exactly where the polynomial cannot follow the target.
+**Top:** the Bayesian Ridge posterior overconcentrates around the best fit model parameters, ignoring model-form errors.
+**bottom:** the POPS hypercube posterior keeps uncertainty where the best fit model cannot interpolate training data.
+
 ///
 
 ## Quick start
