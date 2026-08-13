@@ -1,18 +1,12 @@
 # Contributing
 
-Choose the repository that owns the proposed change:
-
-- Submit shared motivation, theory, terminology, citation, and cross-language
-  material to this central website.
 - Submit Python installation, scikit-learn workflows, docstrings, and API
   documentation to [`popsregression`](https://github.com/POPS-UQ/popsregression).
 - Submit Julia installation, StatsAPI workflows, docstrings, ACE/MD examples,
   and API documentation to
   [`POPSRegression.jl`](https://github.com/POPS-UQ/POPSRegression.jl).
+- An approved PR into the Python and /or Julia implementations should be followed by a PR to this website detailing the new functionality. 
 
-Do not silently change a scientific definition during editorial cleanup. A
-change to the mathematical algorithm should be reviewed against the paper and,
-eventually, validated against both implementations.
 
 ## Editing this site
 

@@ -63,9 +63,6 @@ nav:
       - Julia: getting-started/julia.md
   - Tutorials:
       - Overview: tutorials/index.md
-  - Implementations:
-      - Python: implementations/python.md
-      - Julia: implementations/julia.md
   - Citation: citation.md
   - Contributing: contributing.md
 
