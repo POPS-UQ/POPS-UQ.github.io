@@ -14,5 +14,5 @@ their maintained content.
 - **Julia:** [Propagating uncertainties through molecular dynamics](https://pops-uq.github.io/POPSRegression.jl/md/)
 
 For the shared motivation and terminology, start with the
-[method overview](../method/index.md).
+[method overview](../overview.md).
 

@@ -1,7 +1,7 @@
 # Glossary
 
-Terminology used across both implementations. See [How POPS works](index.md)
-for the rationale and the [algorithm](hypercube.md) for the construction.
+Terminology used across both implementations. See [How POPS works](overview.md)
+for the rationale and the [algorithm](method/hypercube.md) for the construction.
 
 ## Three kinds of uncertainty
 
@@ -71,7 +71,7 @@ themselves observed as pointwise optima — the box is an enclosure, not a
 distribution derived from data density. Percentile clipping shrinks the box
 away from the extreme corrections when outliers dominate.
 
-The middle and bottom rows of the figure on the [home page](../index.md) show
+The middle and bottom rows of the figure on the [home page](index.md) show
 the two forms on the same problem.
 
 ## Active dimension
@@ -90,5 +90,5 @@ the mean prediction, and not an a priori coverage guarantee. It also does not
 substitute for checking that the model class and data are appropriate — a
 diagnosis of large misspecification uncertainty is a reason to reconsider the
 model class, not only to widen the error bars. Consult the
-[paper](../citation.md) before drawing scientific conclusions from an
+[paper](citation.md) before drawing scientific conclusions from an
 application.
