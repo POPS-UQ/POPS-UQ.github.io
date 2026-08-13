@@ -1,9 +1,5 @@
 # POPS: Misspecification-aware regression
-Any regression scheme minimizing the expected loss, including Bayesian schemes, provably ignores model misspecification — the error arising from a limited model form. Parameter uncertainties can be strongly underestimated, especially in the near-deterministic (weak aleatoric) limit of broad interest for computational surrogate modeling. 
-
-Theoretically, one can show this arises as the expected loss is a misspecification-blind upper bound to the generalization error. POPS is an efficient method to approximately minimize the generalization error which ensures posterior coverage in the near-determinstic limit. A demonstration compared to Bayesian regression is shown below. 
-
-This website details the theory; documentation for Python and Julia implemetations are given below. 
+POPS is an efficient method to capture the parameter uncertainties of misspecified (i.e. imperfect) models. It is primarily designed for near-deterministic training data (i.e. weak aleatoric noise), of broad interest for computational surrogate models. Any scheme minimizing the expected loss, including Bayesian approaches, provably ignores misspecification, as illustrated below in the comparison to Bayesian ridge regression. This website details the underlying theory; see "quick start" for details on the Python and Julia implementations. 
 
 [How POPS works](method/index.md) ·
 [Algorithm](method/algorithm.md) ·
