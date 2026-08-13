@@ -5,6 +5,8 @@ POPS is an efficient method to capture the parameter uncertainties of misspecifi
 [Algorithm](method/hypercube.md) ·
 [Paper](https://doi.org/10.1088/2632-2153/ad9fce)
 
+**Online demo from Kermode group (Warwick) [here](https://kermodegroup.github.io/demos/regression-demo.html)**
+
 ![Quartic polynomial fitted to an oscillatory target at three data densities.
 Bayesian Ridge uncertainty collapses as data are added, while the POPS
 posterior retains uncertainty where the model class cannot follow the
@@ -62,7 +64,3 @@ A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
     [Documentation](https://pops-uq.github.io/POPSRegression.jl/) ·
     [Repository](https://github.com/POPS-UQ/POPSRegression.jl)
 
-The two implementations are independent, with their own APIs, versions and
-releases. This site owns the shared scientific context — what the method does
-and why. Each implementation's own site remains the authority for installation,
-API and language-specific workflows.
