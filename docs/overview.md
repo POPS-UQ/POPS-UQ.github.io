@@ -92,7 +92,7 @@ The set \(\{\mathbf w_n\}\) is the POPS posterior support. The
 implementations either use it directly (`ensemble`) or enclose it in an
 axis-aligned box in its own principal-component basis and sample from that
 (`hypercube`), which smooths the estimate and makes propagation cheap. Both are
-[derived on the algorithm page](hypercube.md).
+[derived on the algorithm page](method/hypercube.md).
 
 ## Why this behaves correctly
 
