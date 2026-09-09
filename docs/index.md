@@ -1,10 +1,11 @@
 # POPS: Misspecification-aware regression
 POPS is an efficient and rigorously grounded UQ method for misspecified (imperfect) surrogate models. 
-While a general approach, POPS is primarily designed for the setting where 
+POPS is primarily designed for the following setting, where existing methods fail: 
 - ground truth is near-deterministic (weak aleatoric), e.g. computational surrogates (MLIPs, O/PDE integrators)
 - beyond error estimation, uncertainty must be propagated through posteriors on model parameters
 - we desire tight coverage bounds to assess worst-case parameter values
-Any scheme minimizing the expected loss, including Bayesian approaches, provably ignores misspecification. 
+
+Any scheme minimizing the expected loss, including Bayesian approaches, provably ignores misspecification.
 Conformal methods can provide calibrated error estimates but cannot readily propagate that error through complex workflows.
 POPS provides an efficient scheme which gives naturally calibrated errors through parameter posteriors, ideally suited for propagation.
 
