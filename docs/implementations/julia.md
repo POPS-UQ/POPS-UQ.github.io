@@ -1,22 +1,5 @@
-# Julia
+# POPSRegression.jl
 
-Install the registered Julia package with the package manager:
+The standalone Julia implementation maintains its own package, API reference and tutorials. Start with the [Julia documentation](https://pops-uq.github.io/POPSRegression.jl/) or browse the [Julia source](https://github.com/POPS-UQ/POPSRegression.jl).
 
-```julia
-import Pkg
-Pkg.add("POPSRegression")
-```
-
-Load the package with:
-
-```julia
-using POPSRegression
-```
-
-The Julia implementation follows Julia and StatsAPI conventions. See its
-[API reference](https://pops-uq.github.io/POPSRegression.jl/api/) for current
-constructors and fitting methods rather than translating Python syntax
-literally.
-
-[Open the full Julia documentation](https://pops-uq.github.io/POPSRegression.jl/){ .md-button .md-button--primary }
-
+For an atomistic workflow, follow [fitting an ACE model](https://pops-uq.github.io/POPSRegression.jl/ace/) and [propagating uncertainty through molecular dynamics](https://pops-uq.github.io/POPSRegression.jl/md/).

@@ -25,9 +25,8 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 
-# The header bar is hidden on desktop (see stylesheets/extra.css), so the
-# built-in search box would be unreachable there. Disable search entirely.
-plugins: []
+plugins:
+  - search
 
 markdown_extensions:
   - admonition
@@ -48,19 +47,22 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
+  - javascripts/lab.js
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
   - Home: index.md
+  - Interactive tutorial: tutorials/index.md
   - How POPS works: overview.md
   - Algorithm: 
       - POPS Hypercube: method/hypercube.md
       - POPS PAC-Ellipse: method/pac-ellipse.md
   - Implementations:
+      - implementations/index.md
       - Python: implementations/python.md
-      - Julia: implementations/julia.md
-  - Citation: citation.md
+      - Standalone Julia package: https://pops-uq.github.io/POPSRegression.jl/
+  - Papers and citation: citation.md
   - Contributors: contributors.md
   - Contributing: contributing.md
   - Glossary: glossary.md
