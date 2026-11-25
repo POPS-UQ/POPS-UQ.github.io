@@ -1,32 +1,100 @@
-# PAC-Ellipse regression
+# PAC-Ellipse algorithm
 
-With a small number of independent simulator runs, several parameter distributions can explain the same training residuals. Each distribution can give a different uncertainty for a downstream observable. PAC-Ellipse fits a distribution over the axis scales of a parameter ellipsoid and provides a finite-sample upper bound on the predictive log risk for a new simulator case.
+The [linear POPS construction](hypercube.md) uses pointwise corrections to determine a spread in parameter space. PAC-Ellipse uses that geometry to initialize an ellipsoid. A uniform draw from the ellipsoid defines a linear surrogate, and its prediction at any input has an analytic density. This gives a loss for learning the ellipsoid and, with an independent certification sample, a finite-sample bound on predictive risk.
 
-## From parameter uncertainty to a predictive density
+## Inputs and notation
 
-Consider a linear surrogate with feature vector \\(z(x)\\). If the coefficients are uniform in an ellipsoid with center \\(\\mu\\) and shape matrix \\(B\\), projecting the ellipsoid onto \\(z(x)\\) gives a one-dimensional predictive density centered at \\(z(x)^T\\mu\\). Its squared half-width is \\(z(x)^T B z(x)\\), plus the squared output-offset floor when that coordinate is included. One parameter draw defines an entire response curve. This preserves correlations between predictions when the model is used downstream.
+Let \(\mathbf X\in\mathbb R^{N\times P}\) have one feature vector per row and let \(\mathbf y\in\mathbb R^N\). Partition the **independent cases** into pilot and certification sets. If one simulator run contributes several rows, keep that run together. Write \(n\) for the number of certification cases.
 
-The pilot fit starts from a POPS shape and fits an ellipsoid using the projected density. The negative log density penalizes excessive width while assigning high loss to observations near the edge of the support. In a misspecified model, different parts of the input domain can therefore require different predictive widths.
+Before inspecting the responses, specify an interval \([L,H]\) containing all possible outputs, a density floor weight \(0<\beta<1\), a minimum half-width \(\delta>0\), candidate hyperprior scales and temperatures, and failure probabilities. Write \(R=H-L\). The guarantee assumes independent cases drawn from the deployment distribution.
 
-## Learning the axis scales with finite data
+## 1. Fit the pilot ellipsoid
 
-1. **Define independent cases.** For a PDE solver, one simulation may yield hundreds of correlated spatial outputs. Keep all those outputs in the same case when splitting the data. The number of independent simulations determines the sample size for the certificate.
-2. **Fit the pilot ellipsoid.** A pilot subset fixes the features, center, orientation and baseline axis lengths. A hyperprior specifies plausible changes in the logarithms of those lengths.
-3. **Use the certification cases.** The fit balances empirical log loss against the KL divergence of the fitted scale distribution from its hyperprior. Choosing among a predeclared grid of temperatures and prior scales incurs a selection correction. With cross-fitting, the two subsets exchange roles and the final predictive mixes both folds.
-4. **Propagate the fitted mixture.** Draw a model once and evaluate it at every input in the downstream calculation. Predictive intervals describe the spread in individual outputs. A propagated quantity, such as the difference between two outputs, uses their joint draws.
+Fit the feature transformation and whitening on the pilot cases. Write \(\mathbf z\in\mathbb R^P\) for a transformed feature vector and work in centered output coordinates. The default pilot center \(\boldsymbol\mu\) is the ridge estimate. Let \(\mathbf B_0\) be the fixed shape contribution obtained from the POPS hypercube. Fit a rank-\(r\) update \(\mathbf U\in\mathbb R^{P\times r}\), giving \(\mathbf B=\mathbf B_0+\mathbf U\mathbf U^\mathsf T\).
 
-## Interpreting the certificate
+To derive the density, take \(\mathbf u\) uniform on the unit ball in dimension \(D=P+1\). The last coordinate supplies a shared output offset. A prediction at \(\mathbf z\) is
 
-An ellipsoid has bounded support. To score a future observation even when it falls outside that support, the certificate mixes the fitted predictive density \\(p(y\\mid x)\\) with a uniform density on a **predeclared** output interval of width \\(R\\). With floor weight \\(\\beta\\), the certified quantity is
+\[
+Y=\mathbf z^\mathsf T\boldsymbol\mu+
+   (\mathbf B^{1/2}\mathbf z,\delta)^\mathsf T\mathbf u .
+\]
 
-\\[
-\\mathbb{E}_{\\mathrm{new\\ case}}\\!\\left[-\\log\\left((1-\\beta)p(Y\\mid X)+\\frac{\\beta}{R}\\right)\\right].
-\\]
+By rotational symmetry, the last term has the same law as \(a u_1\), where \(a^2=\mathbf z^\mathsf T\mathbf B\mathbf z+\delta^2\). A slice of the ball at \(u_1=t\) has radius \(\sqrt{1-t^2}\), so its \((D-1)\)-dimensional volume is proportional to \((1-t^2)^{(D-1)/2}\). With \(m=\mathbf z^\mathsf T\boldsymbol\mu\) and \(s=(y-m)/a\), the normalized density inside \(|s|<1\) is
 
-For a case with multiple rows, average its row losses first. The guarantee assumes independent cases from the deployment distribution and an interval containing all possible outputs. A physical bound, such as one from a maximum principle, can justify the interval. Training-set extrema alone cannot establish it.
+\[
+p_{\mathbf B}(y\mid\mathbf z)=
+\frac{\Gamma(D/2+1)}{\sqrt{\pi}\,\Gamma((D+1)/2)}
+\frac{(1-s^2)^{(D-1)/2}}{a}.
+\]
 
-The implementation reports an upper bound for the stored finite mixture, with a confidence level that accounts for sampling and Monte Carlo error. Compare it with the trivial loss ceiling \\(\\log(R/\\beta)\\) to see whether it is informative. This is a guarantee on expected log loss. Coverage of a 95% predictive interval is a separate empirical question.
+The density is zero outside the support. Up to a constant, a pilot observation contributes
+\(\log a-\tfrac{D-1}{2}\log(1-s^2)\) to the loss. The first term penalizes excessive width. The second increases as the observation approaches the edge. Minimizing the pilot loss fits widths in the directions sampled by the features.
 
-## Fit PAC-Ellipse in Python
+### Algorithm 1
 
-Use `POPSEllipseRegression(regularization="PAC", y_bounds=(lo, hi))` on the JAX integration branch. The package guide fits a polynomial surrogate to a bounded sinusoid, reads its certificate and propagates predictions. [Runnable JAX guide](../implementations/python/pac-ellipse.md) · [Sim2Science paper](https://openreview.net/forum?id=gD3LoosP0w)
+~~~text
+Input: pilot cases, rank r, minimum half-width δ
+1. Fit preprocessing, whitening, the ridge center μ and the POPS baseline B₀.
+2. For each pilot row compute a² = zᵀ B₀ z + ‖Uᵀ z‖² + δ².
+3. Optimize U against the projected negative log density using barrier continuation.
+4. Diagonalize B₀ + U Uᵀ = V diag(b) Vᵀ and floor small eigenvalues.
+5. Return the pilot transform, μ, V and b.
+~~~
+
+## 2. Learn the axis scales and certify the predictive
+
+Keep the pilot axes fixed. In the default, fixed-center construction, each \(\omega_k\) is a log multiplier of a **semi-axis length**. Its square enters the width:
+
+\[
+a_{\boldsymbol\omega}^2(\mathbf z)=\delta^2+
+\sum_{k=1}^P b_k\,e^{2\omega_k}(\mathbf v_k^\mathsf T\mathbf z)^2.
+\]
+
+At \(\boldsymbol\omega=0\) this recovers the pilot widths. Place a Gaussian hyperprior \(\pi_\tau=\mathcal N(0,\tau^2 I)\) on the multipliers. A Gaussian hyperposterior \(Q\) describes uncertainty about the widths. Its predictive density is the mixture \(\mathbb E_Q[p_{\boldsymbol\omega}(y\mid\mathbf z)]\).
+
+**Bound the loss.** On the declared output interval, score each candidate using
+\(\ell_{\boldsymbol\omega}=-\log[(1-\beta)p_{\boldsymbol\omega}(y\mid\mathbf z)+\beta/R]\).
+The uniform floor caps this loss at \(h=\log(R/\beta)\). The minimum width caps the projected density and gives a finite lower loss bound \(l\). Average row losses within each case, then average the \(n\) cases with equal weight.
+
+**Account for data-dependent widths.** For each predeclared prior scale and temperature, construct a diagonal Laplace candidate around a regularized empirical optimum. Let \(q\) be a Monte Carlo upper estimate of its empirical expected loss, rescaled from \([l,h]\) to \([0,1]\). The default PAC-Bayes inequality bounds the similarly rescaled population loss by the largest \(p\in[q,1]\) satisfying
+
+\[
+\operatorname{kl}(q\Vert p)
+\le \frac{\operatorname{KL}(Q\Vert\pi_\tau)+\log(K\,\xi(n)/\alpha)}{n}.
+\]
+
+Here \(\operatorname{kl}\) is binary relative entropy, \(K\) counts the candidate prior scales, \(\xi(n)\) is the Seeger–Maurer moment factor and \(\alpha\) is the fold's PAC failure budget. The Gaussian KL measures how much the certification data moved or concentrated the scale distribution. Mapping the inverse-kl result back to loss units gives the bound \(B_Q\). Convexity of negative log transfers an upper bound on the expected component loss to the loss of the mixture.
+
+**Certify the stored mixture.** Prediction uses \(M\) fresh draws from the selected \(Q\). Conditional on the fit, the component risks are independent and bounded. With storage failure budget \(\alpha_s\), Hoeffding's inequality gives the fold bound
+
+\[
+B_M=\min\!\left(h,\ B_Q+(h-l)\sqrt{\frac{\log(1/\alpha_s)}{2M}}\right).
+\]
+
+### Algorithm 2
+
+~~~text
+Input: pilot fit, independent certification cases, protocol grids and failure budgets
+1. Construct candidate Gaussian hyperposteriors over the pilot axis scales.
+2. Select a candidate using estimated PAC bounds on the declared grids.
+3. Use fresh draws to upper-bound its empirical expected loss; add the PAC complexity term
+   through the selected inequality to obtain B_Q.
+4. Draw and store M fresh scale vectors. Compute B_M for their finite mixture.
+5. With cross-fitting, swap the case subsets and repeat both algorithms.
+6. Return the equal mixture of fold predictives and the average of their bounds.
+~~~
+
+## What the certificate guarantees
+
+With probability at least one minus the combined PAC, empirical Monte Carlo and storage failure budgets, the expected floor-contaminated log loss on a new independent case is at most the reported bound. A value below \(\log(R/\beta)\) improves on the loss ceiling available before fitting. The certificate concerns population log risk. Pointwise interval coverage remains a separate empirical diagnostic.
+
+For propagation, select a fold and stored scale vector, then draw one parameter vector and its offset from that ellipsoid. Use that same draw at every input of the downstream calculation.
+
+## Numerical considerations
+
+- **Feature geometry.** Compute squared widths from the baseline and low-rank factors. In the certification stage, cache \(b_k(\mathbf v_k^\mathsf T\mathbf z)^2\) so each candidate only rescales and sums those terms.
+- **Small eigenvalues.** A relative eigenvalue floor stabilizes the pilot axis parameterization. The separate output floor \(\delta\) bounds the peak predictive density even where the projected features vanish.
+- **Small samples.** The complexity term scales with the number of independent cases. Adding correlated rows to one case does not increase \(n\).
+- **Sampling budgets.** More draws for evaluating \(Q\) tighten the empirical Monte Carlo correction. More stored draws reduce the finite-mixture correction. Neither operation adds independent training cases.
+
+[Python worked example](../implementations/python/pac-ellipse.md) · [Protocol and estimator options](../implementations/python/ellipse.md) · [Sim2Science paper](https://openreview.net/forum?id=gD3LoosP0w)
