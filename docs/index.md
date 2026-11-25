@@ -8,6 +8,8 @@ Under misspecification, a conventional Bayesian parameter posterior can concentr
 
 [Explore the interactive tutorial](tutorials/index.md){ .md-button .md-button--primary }
 
+[PAC-Ellipse regression and finite-sample risk bounds](method/pac-ellipse.md){ .md-button }
+
 ## Polynomial regression in the low-noise regime
 
 ![A quartic surrogate fitted to an oscillatory target. From left to right the number of observations increases.](assets/pops-vs-bayesian-ridge.png){ .figure }
