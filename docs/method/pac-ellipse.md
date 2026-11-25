@@ -29,4 +29,4 @@ The implementation reports an upper bound for the stored finite mixture, with a 
 
 ## Fit PAC-Ellipse in Python
 
-Use `POPSEllipseRegression(regularization="PAC", y_bounds=(lo, hi))` on the JAX integration branch. The package guide fits a polynomial surrogate to a bounded sinusoid, reads its certificate and propagates predictions. [Runnable JAX guide](https://github.com/POPS-UQ/popsregression/blob/jax-integration/docs/pac-ellipse.md) · [Sim2Science paper](https://openreview.net/forum?id=gD3LoosP0w)
+Use `POPSEllipseRegression(regularization="PAC", y_bounds=(lo, hi))` on the JAX integration branch. The package guide fits a polynomial surrogate to a bounded sinusoid, reads its certificate and propagates predictions. [Runnable JAX guide](../implementations/python/pac-ellipse.md) · [Sim2Science paper](https://openreview.net/forum?id=gD3LoosP0w)

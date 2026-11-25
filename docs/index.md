@@ -24,4 +24,4 @@ Read each row from left to right. Adding simulator runs pins down the best quart
 
 ## Quick start
 
-Choose the implementation for your workflow. The [Python package](implementations/python.md) provides a regression estimator. [POPSRegression.jl](https://pops-uq.github.io/POPSRegression.jl/) is a standalone Julia package with its own installation guide, API reference, and molecular dynamics examples.
+Choose the implementation for your workflow. The [Python package](implementations/python/index.md) provides a regression estimator. [POPSRegression.jl](implementations/julia.md) is a standalone Julia package with its own installation guide, API reference, and molecular dynamics examples.

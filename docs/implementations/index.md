@@ -1,12 +1,5 @@
-# Getting started
+# Implementations
 
-Choose the implementation that fits your software environment. Both implement
-the POPS method, but their public interfaces intentionally follow their native
-ecosystems.
+[Python · popsregression](python/index.md) provides the JAX hypercube, ensemble and ellipsoid estimators. Installation, worked examples and the API reference are part of this website.
 
-- [Python](python.md): scikit-learn conventions
-- [Julia](julia.md): Julia and StatsAPI conventions
-
-The implementation documentation linked from each page is the authoritative
-source for current API details.
-
+[Julia · POPSRegression.jl](julia.md) is an independent Julia package for regression and atomistic workflows. Its landing page links to the package’s own manual, API reference and tutorials.

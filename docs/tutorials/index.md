@@ -49,6 +49,6 @@ The lab also reports the response change from \(x=-0.4\) to \(x=0.6\). Each ense
 
 ## Continue the experiment
 
-Compare additional regression methods in [James Kermode’s interactive regression demo](https://kermodegroup.github.io/demos/regression-demo.html). For a package example, try the [Python polynomial regression notebook and walkthrough](https://pops-uq.github.io/popsregression/example/). Julia users can go directly to the standalone [POPSRegression.jl documentation](https://pops-uq.github.io/POPSRegression.jl/).
+Compare additional regression methods in [James Kermode’s interactive regression demo](https://kermodegroup.github.io/demos/regression-demo.html). For a package example, try the [Python polynomial regression example](../implementations/python/example.md). Julia users can find package-specific guides on the [Julia implementation page](../implementations/julia.md).
 
 The [research guide](../citation.md#follow-the-research) traces these steps from the low-noise construction to tungsten properties and finite-data risk bounds.

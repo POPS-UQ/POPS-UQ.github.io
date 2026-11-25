@@ -1,0 +1,4 @@
+[submodule "vendor/popsregression"]
+	path = vendor/popsregression
+	url = https://github.com/POPS-UQ/popsregression.git
+	branch = jax-integration
