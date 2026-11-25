@@ -25,9 +25,23 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 
-# The header bar is hidden on desktop (see stylesheets/extra.css), so the
-# built-in search box would be unreachable there. Disable search entirely.
-plugins: []
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [vendor/popsregression]
+          options:
+            docstring_style: numpy
+            docstring_section_style: table
+            show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            members_order: source
+            separate_signature: true
+            show_signature_annotations: true
+            merge_init_into_class: true
+
 
 markdown_extensions:
   - admonition
@@ -48,19 +62,30 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
+  - javascripts/lab.js
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
   - Home: index.md
+  - Interactive tutorial: tutorials/index.md
   - How POPS works: overview.md
   - Algorithm: 
       - POPS Hypercube: method/hypercube.md
       - POPS PAC-Ellipse: method/pac-ellipse.md
   - Implementations:
-      - Python: implementations/python.md
+      - implementations/index.md
+      - Python:
+          - implementations/python/index.md
+          - Hypercube and ensemble regression: implementations/python/usage.md
+          - Ellipsoid posteriors: implementations/python/ellipse.md
+          - PAC-Ellipse worked example: implementations/python/pac-ellipse.md
+          - Polynomial regression example: implementations/python/example.md
+          - Studies: implementations/python/studies.md
+          - API reference: implementations/python/api.md
+          - Glossary: implementations/python/glossary.md
       - Julia: implementations/julia.md
-  - Citation: citation.md
+  - Papers and citation: citation.md
   - Contributors: contributors.md
   - Contributing: contributing.md
   - Glossary: glossary.md

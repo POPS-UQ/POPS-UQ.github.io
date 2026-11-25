@@ -1,79 +1,41 @@
-# POPS: Misspecification-aware regression
-POPS is an efficient and rigorously grounded UQ method for misspecified (imperfect) surrogate models which avoids the overconfidence of Bayesian regression. 
-POPS is primarily designed for the following setting, where existing methods fail: 
+# POPS-UQ: post-Bayesian regression for misspecified, near-deterministic models
 
-- ground truth is near-deterministic (weak aleatoric), e.g. computational surrogates (MLIPs, O/PDE integrators)
+A model is *misspecified* when no choice of parameters can reproduce the underlying response. In the *near-deterministic* regime, repeated observations at a given input have little or no noise. This is common in computational surrogate modeling. A potential fitted to electronic-structure calculations, for example, can reproduce some atomic forces exactly, yet require different parameters to reproduce others.
 
-- beyond one-shot error estimation, uncertainty must be propagated downstream, requiring parameter posteriors
+Under misspecification, a conventional Bayesian parameter posterior can concentrate on a single best fit as the training set grows. The parameter uncertainty due to model-form error persists. Propagating the concentrated posterior through a downstream simulation can therefore substantially underestimate uncertainty in its predictions. [Swinburne and Perez, MLST (2025)](https://doi.org/10.1088/2632-2153/ad9fce)
 
-- we desire tight coverage bounds to assess worst-case parameter values
+**Pointwise Optimal Parameter Sets (POPS)** provide a theoretically grounded, computationally efficient way to quantify that uncertainty. For each observation, POPS finds the parameters that fit it exactly while minimizing the loss on the full dataset. For high-dimensional models linear in their parameters, these constrained fits reuse the same matrix factorization. The resulting parameter ensemble can be propagated through subsequent calculations.
 
-Any scheme minimizing the expected loss, including Bayesian approaches, provably ignores misspecification.
-Conformal methods can provide calibrated error estimates but cannot assign this to parameter distributions suitable for propagation through complex workflows.
-POPS provides an efficient scheme which gives naturally calibrated errors through parameter posteriors, ideally suited for multi scale propagation.
-
-This website details the underlying theory; see [quick start](#quick-start) for details on the Python and Julia implementations. 
-
-[How POPS works](overview.md) ·
-[Algorithm](method/hypercube.md) ·
-[Paper](https://doi.org/10.1088/2632-2153/ad9fce)
-
-**Online demo from Kermode group (Warwick) [here](https://kermodegroup.github.io/demos/regression-demo.html)**
-
-![Quartic polynomial fitted to an oscillatory target at three data densities.
-Bayesian Ridge uncertainty collapses as data are added, while the POPS
-posterior retains uncertainty where the model class cannot follow the
-target.](assets/pops-vs-bayesian-ridge.png){ .figure }
-/// caption
-A quartic polynomial (P = 5) fitted to an oscillatory target as the data grow.
-**Top:** the Bayesian Ridge posterior overconcentrates around the best fit model parameters, ignoring model-form errors.
-**bottom:** the POPS hypercube posterior keeps uncertainty where the best fit model cannot interpolate training data.
-
-///
+[Explore the interactive tutorial](tutorials/index.md){ .md-button .md-button--primary }
 
 ## Quick start
 
-=== "Python"
+```bash
+pip install popsregression
+```
 
-    ```bash
-    pip install popsregression
-    ```
+Fit a quartic surrogate to a deterministic oscillatory response and evaluate its predictive mean and parameter uncertainty on a finer grid.
 
-    ```python
-    from popsregression import POPSRegression
+```python
+import numpy as np
+from popsregression import POPSRegression
 
-    model = POPSRegression().fit(X_train, y_train)
+x = np.linspace(-1, 1, 32)
+y = np.sin(2 * np.pi * x) + 0.3 * x**2
+X = np.polynomial.legendre.legvander(x, 4)
+model = POPSRegression(random_state=0).fit(X, y)
 
-    # y_std combines misspecification and epistemic uncertainty
-    y_pred, y_std = model.predict(X_test, return_std=True)
-    ```
+x_grid = np.linspace(-1, 1, 201)
+X_grid = np.polynomial.legendre.legvander(x_grid, 4)
+mean, std, y_max, y_min = model.predict(X_grid, return_std=True, return_bounds=True)
+```
 
-    `POPSRegression` is a scikit-learn estimator, so it drops into pipelines
-    and hyperparameter search unchanged.
+![A quartic surrogate fitted to an oscillatory target. From left to right the number of observations increases.](assets/pops-vs-bayesian-ridge.png){ .figure }
 
-    [Quick start](implementations/python.md) ·
-    [Documentation](https://pops-uq.github.io/popsregression/) ·
-    [Repository](https://github.com/POPS-UQ/popsregression)
+Read each row from left to right. Adding simulator runs pins down the best quartic polynomial. The top row shows how its parameter uncertainty shrinks. The bottom row shows how much its parameters would have to vary to reach individual observations. Even at the highest data density, the target still oscillates beyond what one quartic can follow.
 
-=== "Julia"
+## Method and applications
 
-    ```julia
-    import Pkg; Pkg.add("POPSRegression")
-    ```
-
-    ```julia
-    using POPSRegression
-
-    model = fit(POPSModel, X_train, Y_train)
-
-    pred = predict(model, X_test; return_std=true, return_bounds=true)
-    pred.mean, pred.std, pred.lower, pred.upper
-    ```
-
-    `POPSModel` follows StatsAPI.jl conventions and supports multivariate
-    targets.
-
-    [Quick start](implementations/julia.md) ·
-    [Documentation](https://pops-uq.github.io/POPSRegression.jl/) ·
-    [Repository](https://github.com/POPS-UQ/POPSRegression.jl)
-
+1. **Diagnose the error.** Change the simulator in the [interactive lab](tutorials/index.md) and measure what happens between training points.
+2. **Construct the ensemble.** Find the smallest increase in total loss compatible with fitting each observation exactly. Follow the [linear derivation](overview.md) and the [hypercube algorithm](method/hypercube.md).
+3. **Propagate a model.** Use the same parameter draw throughout a downstream calculation. The [research guide](citation.md) connects this idea to interatomic potentials and finite-data risk bounds.

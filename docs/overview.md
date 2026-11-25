@@ -63,7 +63,7 @@ The question it asks about observation \(n\) is:
 
 There are many answers to this question, as there are many values of model parameters 
 which would exactly fit a given observation. For each observation, we can thus define 
-a **pointwise optimal parameter set** — POPS - the (typically open) set of all possible parameters 
+a **pointwise optimal parameter set** — POPS - the set of all possible parameters
 which can interpolate a given data point. The POPS algorithm aims to map disagreement 
 by finding \(\mathbf w_n\) the total loss minimiser *within each POPS*, producing a set 
 of parameter vectors. Any posterior whose support covers the span of these vectors is guaranteed to 
@@ -79,7 +79,7 @@ Furthermore, for regularized linear regression we can find \(\mathbf w_n\) analy
 \]
 
 where \(\mathbf C = \langle \mathbf x^\mathsf T\mathbf x\rangle + \Sigma_0/N\) is the
-regularized feature covariance, \(h_n = \mathbf x_n^\mathsf T\mathbf a_n\) is the leverage\
+regularized feature covariance, \(h_n = \mathbf x_n^\mathsf T\mathbf a_n\) is the leverage
  \(e_n = y_n - \mathbf x_n\bar{\mathbf w}\)  the residual and \(\mathbf C\mathbf a_n = \mathbf x_n\).
 
 
@@ -120,7 +120,7 @@ the low-noise regime are informative about model form rather than about noise.
 That is a much weaker assumption than the Gaussian-noise story it replaces, and
 one that is easier to check: it holds when the data are near-deterministic.
 
-**It is cheap.** The corrections for all \(N\) observations follow fromone extra solve reusing the same
+**It is cheap.** The corrections for all \(N\) observations follow from one extra solve reusing the same
 factorization as the fit, plus an eigendecomposition in parameter space
 (\(P\times P\), not \(N\times N\)). There is no MCMC, no bootstrap, no ensemble
 of retrained models. This matters in the surrogate-modelling setting the method

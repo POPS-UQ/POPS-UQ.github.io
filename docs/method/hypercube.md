@@ -221,5 +221,5 @@ singular vectors of \(\mathbf T\).
 
 For the scientific motivation and scope, return to the
 [method overview](../overview.md). Public function names, array layouts, tolerances,
-and sampling interfaces belong to the [Python](../implementations/python.md) and
+and sampling interfaces belong to the [Python](../implementations/python/index.md) and
 [Julia](../implementations/julia.md) implementation documentation.

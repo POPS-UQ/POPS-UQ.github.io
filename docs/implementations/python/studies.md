@@ -1,0 +1,1 @@
+../../../vendor/popsregression/docs/studies.md
