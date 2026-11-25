@@ -10,6 +10,10 @@ Under misspecification, a conventional Bayesian parameter posterior can concentr
 
 ## Quick start
 
+```bash
+pip install popsregression
+```
+
 Fit a quartic surrogate to a deterministic oscillatory response and evaluate its predictive mean and parameter uncertainty on a finer grid.
 
 ```python
@@ -23,7 +27,7 @@ model = POPSRegression(random_state=0).fit(X, y)
 
 x_grid = np.linspace(-1, 1, 201)
 X_grid = np.polynomial.legendre.legvander(x_grid, 4)
-mean, std = model.predict(X_grid, return_std=True)
+mean, std, y_max, y_min = model.predict(X_grid, return_std=True, return_bounds=True)
 ```
 
 ![A quartic surrogate fitted to an oscillatory target. From left to right the number of observations increases.](assets/pops-vs-bayesian-ridge.png){ .figure }
