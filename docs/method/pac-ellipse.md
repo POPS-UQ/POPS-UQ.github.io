@@ -10,16 +10,16 @@ Before inspecting the responses, specify an interval \([L,H]\) containing all po
 
 ## 1. Fit the pilot ellipsoid
 
-Fit the feature transformation and whitening on the pilot cases. Write \(\mathbf z\in\mathbb R^P\) for a transformed feature vector and work in centered output coordinates. The default pilot center \(\boldsymbol\mu\) is the ridge estimate. Let \(\mathbf B_0\) be the fixed shape contribution obtained from the POPS hypercube. Fit a rank-\(r\) update \(\mathbf U\in\mathbb R^{P\times r}\), giving \(\mathbf B=\mathbf B_0+\mathbf U\mathbf U^\mathsf T\).
+Fit the feature transformation and whitening on the pilot cases. Write \(\mathbf z\in\mathbb R^P\) for a transformed feature vector and work in centered output coordinates. The default pilot center \(\mu\in\mathbb R^P\) is the ridge estimate. Let \(\mathbf B_0\) be the fixed shape contribution obtained from the POPS hypercube. Fit a rank-\(r\) update \(\mathbf U\in\mathbb R^{P\times r}\), giving \(\mathbf B=\mathbf B_0+\mathbf U\mathbf U^\mathsf T\).
 
 To derive the density, take \(\mathbf u\) uniform on the unit ball in dimension \(D=P+1\). The last coordinate supplies a shared output offset. A prediction at \(\mathbf z\) is
 
 \[
-Y=\mathbf z^\mathsf T\boldsymbol\mu+
+Y=\mathbf z^\mathsf T\mu+
    (\mathbf B^{1/2}\mathbf z,\delta)^\mathsf T\mathbf u .
 \]
 
-By rotational symmetry, the last term has the same law as \(a u_1\), where \(a^2=\mathbf z^\mathsf T\mathbf B\mathbf z+\delta^2\). A slice of the ball at \(u_1=t\) has radius \(\sqrt{1-t^2}\), so its \((D-1)\)-dimensional volume is proportional to \((1-t^2)^{(D-1)/2}\). With \(m=\mathbf z^\mathsf T\boldsymbol\mu\) and \(s=(y-m)/a\), the normalized density inside \(|s|<1\) is
+By rotational symmetry, the last term has the same law as \(a u_1\), where \(a^2=\mathbf z^\mathsf T\mathbf B\mathbf z+\delta^2\). A slice of the ball at \(u_1=t\) has radius \(\sqrt{1-t^2}\), so its \((D-1)\)-dimensional volume is proportional to \((1-t^2)^{(D-1)/2}\). With \(m=\mathbf z^\mathsf T\mu\) and \(s=(y-m)/a\), the normalized density inside \(|s|<1\) is
 
 \[
 p_{\mathbf B}(y\mid\mathbf z)=
@@ -43,17 +43,17 @@ Input: pilot cases, rank r, minimum half-width δ
 
 ## 2. Learn the axis scales and certify the predictive
 
-Keep the pilot axes fixed. In the default, fixed-center construction, each \(\omega_k\) is a log multiplier of a **semi-axis length**. Its square enters the width:
+Keep the pilot axes fixed. In the default, fixed-center construction, the vector \(\omega=(\omega_1,\ldots,\omega_P)\) collects the axis scales. Each \(\omega_k\) is the log multiplier of a **semi-axis length**. Its square enters the width:
 
 \[
-a_{\boldsymbol\omega}^2(\mathbf z)=\delta^2+
+a_{\omega}^2(\mathbf z)=\delta^2+
 \sum_{k=1}^P b_k\,e^{2\omega_k}(\mathbf v_k^\mathsf T\mathbf z)^2.
 \]
 
-At \(\boldsymbol\omega=0\) this recovers the pilot widths. Place a Gaussian hyperprior \(\pi_\tau=\mathcal N(0,\tau^2 I)\) on the multipliers. A Gaussian hyperposterior \(Q\) describes uncertainty about the widths. Its predictive density is the mixture \(\mathbb E_Q[p_{\boldsymbol\omega}(y\mid\mathbf z)]\).
+At \(\omega=0\) this recovers the pilot widths. Place a Gaussian hyperprior \(\pi_\tau=\mathcal N(0,\tau^2 I)\) on the multipliers. A Gaussian hyperposterior \(Q\) describes uncertainty about the widths. Its predictive density is the mixture \(\mathbb E_Q[p_{\omega}(y\mid\mathbf z)]\).
 
 **Bound the loss.** On the declared output interval, score each candidate using
-\(\ell_{\boldsymbol\omega}=-\log[(1-\beta)p_{\boldsymbol\omega}(y\mid\mathbf z)+\beta/R]\).
+\(\ell_{\omega}=-\log[(1-\beta)p_{\omega}(y\mid\mathbf z)+\beta/R]\).
 The uniform floor caps this loss at \(h=\log(R/\beta)\). The minimum width caps the projected density and gives a finite lower loss bound \(l\). Average row losses within each case, then average the \(n\) cases with equal weight.
 
 **Account for data-dependent widths.** For each predeclared prior scale and temperature, construct a diagonal Laplace candidate around a regularized empirical optimum. Let \(q\) be a Monte Carlo upper estimate of its empirical expected loss, rescaled from \([l,h]\) to \([0,1]\). The default PAC-Bayes inequality bounds the similarly rescaled population loss by the largest \(p\in[q,1]\) satisfying

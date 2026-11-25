@@ -8,7 +8,23 @@ Under misspecification, a conventional Bayesian parameter posterior can concentr
 
 [Explore the interactive tutorial](tutorials/index.md){ .md-button .md-button--primary }
 
-## Polynomial regression in the low-noise regime
+## Quick start
+
+Fit a quartic surrogate to a deterministic oscillatory response and evaluate its predictive mean and parameter uncertainty on a finer grid.
+
+```python
+import numpy as np
+from popsregression import POPSRegression
+
+x = np.linspace(-1, 1, 32)
+y = np.sin(2 * np.pi * x) + 0.3 * x**2
+X = np.polynomial.legendre.legvander(x, 4)
+model = POPSRegression(random_state=0).fit(X, y)
+
+x_grid = np.linspace(-1, 1, 201)
+X_grid = np.polynomial.legendre.legvander(x_grid, 4)
+mean, std = model.predict(X_grid, return_std=True)
+```
 
 ![A quartic surrogate fitted to an oscillatory target. From left to right the number of observations increases.](assets/pops-vs-bayesian-ridge.png){ .figure }
 
@@ -19,7 +35,3 @@ Read each row from left to right. Adding simulator runs pins down the best quart
 1. **Diagnose the error.** Change the simulator in the [interactive lab](tutorials/index.md) and measure what happens between training points.
 2. **Construct the ensemble.** Find the smallest increase in total loss compatible with fitting each observation exactly. Follow the [linear derivation](overview.md) and the [hypercube algorithm](method/hypercube.md).
 3. **Propagate a model.** Use the same parameter draw throughout a downstream calculation. The [research guide](citation.md) connects this idea to interatomic potentials and finite-data risk bounds.
-
-## Quick start
-
-Choose the implementation for your workflow. The [Python package](implementations/python/index.md) provides a regression estimator. [POPSRegression.jl](implementations/julia.md) is a standalone Julia package with its own installation guide, API reference, and molecular dynamics examples.
