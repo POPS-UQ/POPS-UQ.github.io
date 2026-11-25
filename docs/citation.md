@@ -30,3 +30,8 @@ implementation's repository:
 **What happens to a downstream observable.** Perez, Subramanyam, Maliyov and Swinburne study tungsten phase and defect properties. Brute-force resampling and an implicit Taylor expansion carry uncertainty from fitted interatomic-potential parameters to the calculated properties. [npj Computational Materials (2025)](https://doi.org/10.1038/s41524-025-01758-4)
 
 **What finite data can certify.** “PAC-Bayesian regression for misspecified, near-deterministic surrogate models” considers distributions over hyperparameters and bounds generalization error. Its force-field and PDE examples address finite-data risk. In the tutorial, the grid coverage counts actual hits on one known simulator, a different quantity from a PAC risk bound. [NeurIPS Sim2Science workshop](https://openreview.net/forum?id=gD3LoosP0w)
+
+## Applications and extensions
+
+- **Constraining a potential ensemble with physics.** Simmons, Swinburne, Hudson and Kermode extend POPS by imposing physical constraints on the ensemble of interatomic potentials. Their examples use phonons and elastic properties to show how such constraints restrict the admissible models. [Physics Informed Priors for Machine Learning Interatomic Potentials with Uncertainty Quantification (preprint)](https://arxiv.org/abs/2611.09325)
+- **Propagating uncertainty to rare-event kinetics.** Moracchini and colleagues study how uncertainty in an interatomic potential affects the probability of reaching one state before another. Girsanov reweighting lets them reuse trajectories across potential parameters. [Girsanov Reweighting for Uncertainty Propagation in Rare-Event Kinetics (preprint)](https://arxiv.org/abs/2607.13757)
