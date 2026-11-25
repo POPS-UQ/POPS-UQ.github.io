@@ -6,20 +6,35 @@
   const ctx = chart.getContext("2d");
   function render() {
     const n = Number(field("count").value);
-    const curved = field("target").value === "curved";
-    const truth = x => 0.25 + 0.6 * x + (curved ? 0.65 * Math.cos(Math.PI * x) : 0);
+    const degree = Number(field("degree").value);
+    const truth = field("target").value === "sine"
+      ? x => Math.sin(2 * Math.PI * x) + 0.3 * x * x
+      : x => 0.3 + x - 0.6 * x * x;
     const xs = Array.from({length: n}, (_, i) => -1 + 2 * i / (n - 1));
     const sum = values => values.reduce((a, b) => a + b, 0);
-    // The symmetric design makes the intercept and slope columns orthogonal.
-    const xx = sum(xs.map(x => x * x));
-    const intercept = sum(xs.map(truth)) / n;
-    const slope = sum(xs.map(x => x * truth(x))) / xx;
-    const mean = x => intercept + slope * x;
+    // Discrete monic orthogonal polynomials on the symmetric training grid.
+    // The three-term recurrence diagonalizes the least-squares Gram matrix.
+    const norms = [], recurrence = [], coefficients = [];
+    function basis(x, order = degree) {
+      const v = [1];
+      for (let k = 0; k < order; k++)
+        v.push(x * v[k] - (k ? recurrence[k] * v[k - 1] : 0));
+      return v;
+    }
+    for (let k = 0; k <= degree; k++) {
+      const column = xs.map(x => basis(x, k)[k]);
+      norms[k] = sum(column.map(v => v * v));
+      coefficients[k] = sum(column.map((v, i) => v * truth(xs[i]))) / norms[k];
+      recurrence[k] = k ? norms[k] / norms[k - 1] : 0;
+    }
+    const mean = x => sum(basis(x).map((v, k) => v * coefficients[k]));
+    const kernel = (a, b) => sum(a.map((v, k) => v * b[k] / norms[k]));
     const residual = xs.map(x => truth(x) - mean(x));
     const ss = sum(residual.map(e => e * e));
     const members = xs.map((xi, i) => {
-      const scale = residual[i] / (1 / n + xi * xi / xx);
-      return x => mean(x) + scale * (1 / n + xi * x / xx);
+      const row = basis(xi);
+      const scale = residual[i] / kernel(row, row);
+      return x => mean(x) + scale * kernel(row, basis(x));
     });
     const point = field("point");
     point.max = n;
@@ -27,7 +42,8 @@
     field("index").textContent = point.value + " of " + n;
     function bounds(x) {
       if (field("band").value === "mean") {
-        const width = 2 * Math.sqrt(ss / (n - 2) * (1 / n + x * x / xx));
+        const row = basis(x);
+        const width = 2 * Math.sqrt(ss / (n - degree - 1) * kernel(row, row));
         return [mean(x) - width, mean(x) + width];
       }
       const ys = members.map(f => f(x));
@@ -86,6 +102,11 @@
       const [low, high] = bounds(x);
       if (truth(x) >= low - 1e-12 && truth(x) <= high + 1e-12) inside++;
     }
+    const difference = f => f(0.6) - f(-0.4);
+    const deltas = members.map(difference);
+    field("propagation").textContent = "Response difference · simulator " + difference(truth).toFixed(3)
+      + " · best fit " + difference(mean).toFixed(3) + " · POPS range ["
+      + Math.min(...deltas).toFixed(3) + ", " + Math.max(...deltas).toFixed(3) + "].";
     field("results").textContent = "Training RMSE " + Math.sqrt(ss / n).toFixed(3)
       + " · Grid coverage " + inside + "/200 · Selected point at x = " + xs[index].toFixed(2)
       + " has residual " + residual[index].toFixed(3) + ".";

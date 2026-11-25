@@ -25,7 +25,7 @@ implementation's repository:
 
 ## Follow the research
 
-**Why parameter uncertainty survives in a low-noise fit.** Swinburne and Perez derive the pointwise construction and study approximate parameter distributions for imperfect surrogate models. The constrained line in the interactive lab is a two-parameter instance of that construction. [MLST (2025)](https://doi.org/10.1088/2632-2153/ad9fce)
+**Why parameter uncertainty survives in a low-noise fit.** Swinburne and Perez derive the pointwise construction and study approximate parameter distributions for imperfect surrogate models. The constrained polynomial in the interactive lab is an instance of that construction. [MLST (2025)](https://doi.org/10.1088/2632-2153/ad9fce)
 
 **What happens to a downstream observable.** Perez, Subramanyam, Maliyov and Swinburne study tungsten phase and defect properties. Brute-force resampling and an implicit Taylor expansion carry uncertainty from fitted interatomic-potential parameters to the calculated properties. [npj Computational Materials (2025)](https://doi.org/10.1038/s41524-025-01758-4)
 

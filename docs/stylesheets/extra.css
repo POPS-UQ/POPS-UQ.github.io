@@ -35,4 +35,4 @@
 .lab-key {display: flex; flex-wrap: wrap; gap: .6rem; margin: 0!important; padding: .5rem 1rem; background: #fbfdff; color: #263752; font-size: .75rem;}
 .lab-key span:nth-child(2) {color: #006677;}
 .lab-key span:nth-child(3) {color: #a94a13;}
-#lab-results {padding: 0 1rem; font-variant-numeric: tabular-nums;}
+#lab-results, #lab-propagation {padding: 0 1rem; font-variant-numeric: tabular-nums;}
